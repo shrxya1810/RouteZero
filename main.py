@@ -10,6 +10,7 @@ from typing import Optional, List, Dict, Any
 import httpx
 import os
 from dotenv import load_dotenv
+from fleet_emissions import get_freight_routes
 
 load_dotenv()
 
@@ -46,6 +47,11 @@ class RouteObject(BaseModel):
 class LLMExplanationRequest(BaseModel):
     route: RouteObject
     user_context: Optional[str] = None
+
+class FreightOptionsRequest(BaseModel):
+    source: List[float]
+    destination: List[float]
+    mode: Optional[str] = "heavy_truck"  # default to truck, but allow rail/ship
 
 def extract_route_context(route_obj: RouteObject) -> Dict[str, Any]:
     """
@@ -468,6 +474,27 @@ async def reverse_logistics_optimization(request: ReverseLogisticsRequest):
     except HTTPException:
         raise
     except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@app.post("/freight-options")
+async def freight_options(request: FreightOptionsRequest):
+    """
+    Get optimized freight (long-haul) route options and emissions.
+    Supports farm→processing, port→warehouse, warehouse→store, etc.
+    """
+    import logging
+    logger = logging.getLogger("main")
+    try:
+        if not request.source or not request.destination:
+            raise HTTPException(status_code=400, detail="Both source and destination coordinates are required")
+        # Get freight route and emissions
+        result = get_freight_routes(request.source, request.destination, request.mode)
+        logger.info(f"Freight route: {result}")
+        return {"freight_route": result}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in /freight-options: {e}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.get("/health")
