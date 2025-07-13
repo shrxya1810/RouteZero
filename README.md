@@ -1,392 +1,217 @@
-# RouteZero: Smart Logistics for Sustainable Retail Distribution
+---
 
-> **Walmart Sparkathon Project** - An AI-powered intelligent logistics optimizer that dynamically recommends the most sustainable product delivery routes and warehouse decisions, reducing carbon emissions, fuel consumption, and delivery times—while integrating community support and customer incentives.
+# RouteZero Backend (Walmart Sparkathon)
 
-## 🎯 Core Concept
+**RouteZero** is a modular, production-grade FastAPI backend for sustainable logistics, built for the Walmart Sparkathon. It provides advanced route optimization, emissions tracking, green carrier assignment, eco points, reverse logistics, and LLM-powered explanations for eco-friendly delivery.
 
-RouteZero revolutionizes retail logistics by combining advanced route optimization with sustainability metrics, creating a comprehensive ecosystem that benefits businesses, customers, and the environment. Our platform intelligently balances delivery efficiency with environmental impact, making sustainable choices the default option.
+---
 
-## 🚀 Key Features Integration
+## 🚀 Project Overview
 
-### 1. **Carbon-Aware Logistics Engine**
+RouteZero powers eco-conscious delivery by:
+- Optimizing delivery and return routes for minimal emissions
+- Assigning the greenest feasible carrier (EV, hybrid, diesel) per route
+- Calculating and rewarding eco points for sustainable choices
+- Providing natural language explanations (via LLM) for every route
+- Enabling reverse logistics (pairing returns with deliveries)
+- Exposing a robust, CORS-enabled API for frontend and AI integration
 
-#### Route Optimization
-- **AI-Powered Path Selection**: Advanced algorithms choose delivery paths with the least carbon footprint using real-time traffic, fuel efficiency, and emission models
-- **Multi-Criteria Optimization**: Considers distance, traffic conditions, vehicle type, and emission factors simultaneously
-- **Alternative Route Generation**: Provides multiple route options with different sustainability profiles
-- **Real-Time Adaptation**: Adjusts routes based on current traffic and environmental conditions
+---
 
-#### Green Carrier Matching
-- **Distance-Based Vehicle Selection**: Automatically matches routes with optimal vehicle types (EV, hybrid, diesel) based on distance
-- **Eco-Fleet Prioritization**: Prioritizes electric or hybrid vehicle fleets for short to medium distances
-- **Feasibility Scoring**: Provides confidence scores for vehicle recommendations
-- **Eco-Impact Assessment**: Categorizes environmental impact as minimal, low, medium, or high
+## 🌟 Key Features
 
-#### Reverse Logistics Optimization
-- **Proximity-Based Pairing**: Pairs returns with deliveries within 3km using Haversine distance calculation
-- **Efficiency Metrics**: Tracks pairing efficiency and provides detailed analytics
-- **Circular Economy Integration**: Supports sustainable product lifecycle management
-- **Redundant Trip Elimination**: Minimizes empty return trips through intelligent route planning
+- **Route Optimization**: Multi-criteria, carbon-aware route selection using OpenRouteService
+- **Emissions Calculation**: Per-route CO₂ emissions for all vehicle types
+- **Green Carrier Matching**: Assigns best vehicle (EV/hybrid/diesel) based on distance and feasibility
+- **Eco Points System**: Gamified, tiered rewards for low-emission routes
+- **LLM Integration**: Dynamic, user-friendly explanations for any route via `/generate-explanation`
+- **Reverse Logistics**: Pairs returns with deliveries within 3km for circular logistics
+- **CORS Support**: Ready for frontend and cross-origin requests
+- **Robust Validation & Error Handling**: For all endpoints and payloads
 
-### 2. **Customer Carbon Wallet**
+---
 
-#### Eco Points System
-- **Tiered Reward Structure**: 
-  - 50 points for ≤50g emissions (excellent)
-  - 30 points for ≤150g emissions (good)
-  - 0 points for >150g emissions (needs improvement)
-- **Sustainable Choice Rewards**: Customers earn eco points for opting for green delivery options
-- **Combined Delivery Incentives**: Rewards for consolidating multiple deliveries into single trips
-- **Points Comparison**: Shows potential points gained by switching to greener vehicles
+## 📚 API Endpoints Summary
 
-#### Green Delivery Challenges
-- **Behavioral Nudges**: App encourages users to make more sustainable delivery choices
-- **Gamification Elements**: Challenges and achievements for reducing carbon footprint
-- **Educational Content**: Information about environmental impact of delivery choices
+| Endpoint                  | Method | Description                                                                                  |
+|---------------------------|--------|----------------------------------------------------------------------------------------------|
+| `/route-options`          | POST   | Get optimized routes, emissions, eco points, and green carrier assignment                    |
+| `/route-explanation`      | POST   | Get a simple, modular natural language explanation for a route                               |
+| `/generate-explanation`   | POST   | Get a dynamic LLM-generated explanation for a route (for frontend \"Why this route?\" popups)|
+| `/reverse-logistics`      | POST   | Pair returns with deliveries based on proximity (reverse logistics optimizer)                |
+| `/health`                 | GET    | Health check/status                                                                          |
+| `/`                       | GET    | Root endpoint (basic health check)                                                           |
 
-#### Real-Time Footprint Tracker
-- **Live Emission Dashboard**: Real-time tracking of emissions saved by delivery choices
-- **Historical Impact Analysis**: Long-term view of customer's environmental contribution
-- **Personalized Insights**: Recommendations for further reducing carbon footprint
+---
 
-### 3. **Community Eco-Hub Integration**
-
-#### Local Pickup Hubs
-- **Strategic Hub Placement**: Network of pickup points at community centers, schools, and shared spaces
-- **Convenience Optimization**: Hubs located for maximum accessibility and minimal travel
-- **Community Engagement**: Local businesses and organizations as sustainability partners
-
-#### Smart Bulk Routing
-- **Community Delivery Optimization**: Encourages bulk community deliveries to reduce trip frequency
-- **Neighborhood Coordination**: Coordinates deliveries within communities for efficiency
-- **Shared Resource Utilization**: Maximizes use of community delivery infrastructure
-
-#### Hub Leaderboard
-- **Gamified Sustainability**: Leaderboards for hubs achieving highest reduction in delivery emissions
-- **Community Competition**: Friendly competition between different pickup locations
-- **Recognition System**: Rewards for most sustainable community delivery practices
-
-## 🛠️ Technical Architecture
-
-### Modular Code Structure
+## 🗂️ Folder & File Structure
 
 ```
 RouteZero/
-├── main.py                 # FastAPI application with CORS support
-├── emissions.py            # Core emissions calculation
-├── carrier_selector.py     # Green carrier matching logic
-├── eco_points.py          # Eco points calculation and tagging
-├── reverse_logistics.py   # Reverse logistics optimization
-├── route_handler.py       # Route optimization engine
-└── pickup_hubs.json      # Hub location data
+├── main.py                # FastAPI app, all endpoints, CORS, LLM integration
+├── emissions.py           # Emissions calculation logic
+├── carrier_selector.py    # Green carrier matching logic
+├── eco_points.py          # Eco points and eco tag logic
+├── reverse_logistics.py   # Reverse logistics optimizer (proximity-based pairing)
+├── route_handler.py       # Route optimization engine (OpenRouteService)
+├── pickup_hubs.json       # Sample hub data
+├── requirements.txt       # Python dependencies
+├── .env                   # Environment variables (not committed)
+├── test_*.py              # Test suites
+└── README.md              # This file
 ```
 
-### Core Components
+---
 
-#### Route Optimization Engine
-```python
-# Advanced route calculation with emission consideration
-def get_routes_safe(source: List[float], destination: List[float]) -> Dict[str, Any]:
-    """
-    Carbon-aware route optimization with multiple criteria:
-    - Distance optimization
-    - Emission calculation
-    - Traffic consideration
-    - Vehicle type matching
-    """
+## 🛠️ Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd RouteZero
 ```
 
-#### Green Carrier Matching
-```python
-# Distance-based vehicle selection
-def match_green_carrier(distance_km):
-    """
-    Matches optimal vehicle type based on distance:
-    - EV: ≤300km (optimal for short distances)
-    - Hybrid: ≤800km (medium distances)
-    - Diesel: >800km (long distances)
-    Returns feasibility score and reasoning
-    """
+### 2. Create and Activate a Virtual Environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\\Scripts\\activate
 ```
 
-#### Emission Calculation System
-```python
-# Multi-vehicle emission modeling
-def calculate_emissions(distance_km, vehicle_type="car"):
-    """
-    Calculates CO2 emissions with eco-friendly categorization:
-    - EV: 0 g/km
-    - Hybrid: 90 g/km
-    - Diesel/Car: 192 g/km
-    """
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
 ```
 
-#### Eco Points System
-```python
-# Tiered reward calculation
-def get_eco_points(emissions_grams):
-    """
-    Calculates eco points based on emissions:
-    - ≤50g: 50 points (excellent)
-    - ≤150g: 30 points (good)
-    - >150g: 0 points (needs improvement)
-    """
+### 4. Configure Environment Variables
+
+Create a `.env` file in the project root with:
+
+```
+ORS_API_KEY=your_openrouteservice_api_key
+LLM_API_URL=http://localhost:8001/explain-route   # (or your LLM endpoint)
+LLM_API_KEY=your_llm_api_key                      # (if required)
 ```
 
-#### Reverse Logistics Optimizer
-```python
-# Proximity-based pairing
-def optimize_reverse_pickup(deliveries, returns):
-    """
-    Pairs returns with deliveries within 3km:
-    - Haversine distance calculation
-    - Efficiency metrics
-    - Detailed pairing analytics
-    """
+---
+
+## ▶️ Run Instructions
+
+Start the FastAPI server (with hot reload):
+
+```bash
+uvicorn main:app --reload
 ```
 
-### API Endpoints
+- API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Health check: [http://localhost:8000/health](http://localhost:8000/health)
 
-#### Route Optimization with Green Carrier Matching
-```http
+---
+
+## 📝 API Usage Examples
+
+### 1. Route Optimization
+
+**Request:**
+```json
 POST /route-options
-Content-Type: application/json
-
 {
-  "source": [77.6413, 12.9716],      // [longitude, latitude]
-  "destination": [72.8777, 19.0760]   // [longitude, latitude]
+  "source": [77.6413, 12.9716],
+  "destination": [72.8777, 19.0760]
 }
 ```
-
 **Response:**
 ```json
 {
   "routes": [
     {
       "distance_km": 750.45,
-      "duration_min": 420.30,
+      "duration_min": 420.3,
       "emissions_grams": 187.61,
       "emission_level": "high",
       "eco_tag": "non_eco",
       "eco_points": 0,
-      "green_carrier": {
-        "recommended_vehicle": "hybrid",
-        "reasoning": "Hybrid for long distance (750.45km)",
-        "feasibility_score": 0.75,
-        "eco_impact": "medium",
-        "recommended_emissions_grams": 67540.5,
-        "emissions_saved_grams": -67352.89,
-        "recommended_eco_points": 0,
-        "points_gained": 0
-      }
+      "carrier_type": "hybrid",
+      "carrier_score": 0.75,
+      "green_carrier": { ... }
     }
   ]
 }
 ```
 
-#### Route Explanation API
-```http
-POST /route-explanation
-Content-Type: application/json
+### 2. LLM-Powered Route Explanation
 
+**Request:**
+```json
+POST /generate-explanation
 {
-  "emissions_grams": 25.5,
-  "vehicle_type": "ev",
-  "duration_min": 12.3
+  "route": { ... },  // Route object from /route-options
+  "user_context": "User prefers eco-friendly options"
 }
 ```
-
 **Response:**
 ```json
 {
   "success": true,
   "data": {
-    "explanation": "This is a quick trip with very low emissions (25.5g CO2). Electric vehicles produce zero direct emissions, making this route highly eco-friendly. This route is excellent for the environment.",
-    "eco_score": 50,
-    "emission_level": "very low",
-    "eco_status": "excellent",
-    "recommendations": [
-      "Excellent eco-friendly choice!",
-      "This route sets a great example for sustainable transportation"
-    ]
+    "explanation": "This is a quick trip covering 25.5 km. ...",
+    "confidence": 0.8,
+    "source": "llm"  // or "fallback"
   }
 }
 ```
 
-#### Reverse Logistics Optimization
-```http
+### 3. Reverse Logistics
+
+**Request:**
+```json
 POST /reverse-logistics
-Content-Type: application/json
-
 {
-  "deliveries": [
-    {"id": "d1", "lat": 12.9716, "lon": 77.6413}
-  ],
-  "returns": [
-    {"id": "r1", "lat": 12.9750, "lon": 77.6450}
-  ]
+  "deliveries": [{"id": "d1", "lat": 12.9716, "lon": 77.6413}],
+  "returns": [{"id": "r1", "lat": 12.9750, "lon": 77.6450}]
 }
 ```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "paired_routes": [
-      {
-        "delivery_id": "d1",
-        "return_id": "r1",
-        "delivery_coords": [12.9716, 77.6413],
-        "return_coords": [12.9750, 77.6450],
-        "distance_km": 2.8,
-        "route_type": "paired_delivery_return"
-      }
-    ],
-    "total_pairs": 1,
-    "pairing_efficiency": 100.0
-  }
-}
-```
-
-#### Health Check
-```http
-GET /health
-```
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "services": {
-    "route_optimization": "available",
-    "green_carrier_matching": "available",
-    "eco_points_calculation": "available",
-    "reverse_logistics": "available"
-  }
-}
-```
-
-## 🏗️ Installation & Setup
-
-### Prerequisites
-- Python 3.7+
-- OpenRouteService API key (free tier available)
-
-### Quick Start
-
-1. **Clone the Repository**
-   ```bash
-   git clone <repository-url>
-   cd RouteZero
-   ```
-
-2. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Configure Environment**
-   ```bash
-   # Create .env file
-   echo "ORS_API_KEY=your_openrouteservice_api_key" > .env
-   ```
-
-4. **Run the Application**
-   ```bash
-   uvicorn main:app --reload
-   ```
-
-5. **Access the API**
-   - API Documentation: `http://localhost:8000/docs`
-   - Health Check: `http://localhost:8000/health`
-   - Root Endpoint: `http://localhost:8000/`
-
-## 🧪 Testing & Validation
-
-### Comprehensive Test Suite
-```bash
-# Test route optimization engine
-python test_route_handler.py
-
-# Test emission calculation system
-python test_emissions.py
-
-# Test eco-tagging and sorting
-python test_eco_tags.py
-```
-
-### Sample Data
-The project includes `pickup_hubs.json` with 8 realistic Walmart delivery hubs across India:
-- **Tier 1 Cities**: Bangalore, Mumbai, Delhi, Hyderabad, Chennai, Pune
-- **Tier 2 Cities**: Nagpur, Indore
-- **Hub Types**: Warehouses, Fulfillment Centers, Retail Stores, Customer Locations
-
-## 🔧 Technical Features
-
-### Error Handling & Validation
-- **Coordinate Validation**: Ensures [longitude, latitude] format with proper ranges
-- **API Error Management**: Graceful handling of network and service errors
-- **Input Validation**: Comprehensive validation of all user inputs
-- **Logging & Monitoring**: Detailed logging for debugging and performance monitoring
-
-### Performance Optimization
-- **Response Optimization**: Returns only essential route data to reduce payload size
-- **Caching Strategy**: Intelligent caching of frequently requested routes
-- **Async Processing**: Non-blocking API responses for better user experience
-
-### CORS Support
-- **Frontend Integration**: Full CORS support for seamless frontend-backend integration
-- **Configurable Origins**: Easy configuration for production environments
-- **Cross-Origin Requests**: Handles all HTTP methods and headers
-
-### Sustainability Metrics
-- **Real-Time Emission Tracking**: Live calculation of CO2 emissions per route
-- **Vehicle Type Optimization**: Different emission factors for car, hybrid, and EV
-- **Eco-Friendly Sorting**: Automatic prioritization of sustainable routes
-- **Points-Based Rewards**: Gamified sustainability with eco points system
-
-## 🌱 Environmental Impact
-
-### Carbon Reduction Features
-- **Emission-Aware Routing**: Routes optimized for minimal carbon footprint
-- **Green Vehicle Prioritization**: Automatic selection of eco-friendly transport options
-- **Community Consolidation**: Bulk deliveries to reduce overall vehicle trips
-- **Reverse Logistics**: Efficient return routes to minimize empty trips
-- **Proximity-Based Pairing**: Intelligent pairing of deliveries and returns
-
-### Customer Engagement
-- **Eco Points System**: Tiered rewards for sustainable delivery choices
-- **Educational Dashboard**: Real-time impact visualization with natural language explanations
-- **Behavioral Nudges**: Encourages environmentally conscious decisions
-- **Gamification**: Points-based system with clear improvement metrics
-
-## 🏆 Walmart Sparkathon Alignment
-
-### Innovation Criteria Met
-✅ **AI-Powered Optimization**: Advanced algorithms for route and emission optimization  
-✅ **Sustainability Focus**: Comprehensive carbon footprint reduction with green carrier matching  
-✅ **Customer Engagement**: Gamified eco-friendly choices with points system  
-✅ **Community Integration**: Local pickup hubs and bulk delivery coordination  
-✅ **Real-World Impact**: Practical implementation for retail logistics  
-✅ **Scalable Architecture**: Modular design for enterprise deployment  
-✅ **LLM Integration Ready**: Route explanation API for AI-enhanced insights  
-
-### Business Value
-- **Cost Reduction**: Optimized routes reduce fuel consumption and delivery costs
-- **Customer Satisfaction**: Faster, more sustainable delivery options with clear explanations
-- **Brand Enhancement**: Demonstrates commitment to environmental responsibility
-- **Operational Efficiency**: Streamlined logistics with better resource utilization
-- **Data-Driven Insights**: Comprehensive analytics for continuous improvement
-
-## 🤝 Contributing
-
-This project is developed for the Walmart Sparkathon. For questions or collaboration opportunities, please reach out to the development team.
-
-## 📄 License
-
-This project is developed as part of the Walmart Sparkathon competition. All rights reserved.
 
 ---
 
-**RouteZero** - Making sustainable logistics the smart choice for tomorrow's retail ecosystem.
+## 🧑‍💻 Contribution Instructions
+
+1. **Fork and clone** this repository.
+2. **Create a new branch** for your feature or bugfix.
+3. **Write clear, modular code** and add/modify tests as needed.
+4. **Run all tests** before submitting a PR.
+5. **Open a pull request** with a clear description of your changes.
+
+**Guidelines:**
+- Follow PEP8 and use type hints.
+- Keep code modular (see existing structure).
+- Document new endpoints and features in the README.
+- For major changes, open an issue for discussion first.
+
+---
+
+## 🧩 Dependencies
+
+- Python 3.7+
+- FastAPI
+- httpx
+- openrouteservice
+- python-dotenv
+- pydantic
+- uvicorn
+- (see `requirements.txt` for full list)
+
+---
+
+## 🏆 Acknowledgements
+
+- Built for the Walmart Sparkathon
+- Uses [OpenRouteService](https://openrouteservice.org/) for route optimization
+
+---
+
+**RouteZero** – Making sustainable logistics the smart choice for tomorrow's retail ecosystem.
+
+---
