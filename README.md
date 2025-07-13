@@ -1,27 +1,39 @@
 
 # RouteZero Backend (Walmart Sparkathon)
 
-**RouteZero** is a modular, production-grade FastAPI backend for sustainable logistics, built for the Walmart Sparkathon. It provides advanced route optimization, emissions tracking, green carrier assignment, eco points, reverse logistics, and LLM-powered explanations for eco-friendly delivery.
+**This is the backend service for RouteZero, a full-stack logistics optimization platform built for the Walmart Sparkathon.**
+
+The backend provides:
+- Advanced route optimization (last-mile and freight)
+- Emissions tracking for all vehicle types
+- Green carrier assignment and eco points
+- Reverse logistics (returns pairing)
+- LLM-powered explanations for eco-friendly delivery
+- Robust, CORS-enabled API for frontend and AI integration
+
+> **Note:** The frontend is developed in a separate branch/repo by another team member. This backend is designed for seamless integration with any frontend or AI client.
 
 ---
 
 ## 🚀 Project Overview
 
-RouteZero powers eco-conscious delivery by:
+RouteZero backend powers eco-conscious delivery and supply chain by:
 - Optimizing delivery and return routes for minimal emissions
 - Assigning the greenest feasible carrier (EV, hybrid, diesel) per route
 - Calculating and rewarding eco points for sustainable choices
 - Providing natural language explanations (via LLM) for every route
 - Enabling reverse logistics (pairing returns with deliveries)
+- Supporting end-to-end freight (farm-to-fork) route optimization with trucks, rail, and ships
 - Exposing a robust, CORS-enabled API for frontend and AI integration
 
 ---
 
 ## 🌟 Key Features
 
-- **Route Optimization**: Multi-criteria, carbon-aware route selection using OpenRouteService
-- **Emissions Calculation**: Per-route CO₂ emissions for all vehicle types
-- **Green Carrier Matching**: Assigns best vehicle (EV/hybrid/diesel) based on distance and feasibility
+- **Last-Mile Route Optimization**: Multi-criteria, carbon-aware route selection using OpenRouteService
+- **Freight Route Optimization**: End-to-end supply chain support (farm→processing, port→warehouse, warehouse→store) with heavy truck, rail, and ship modes
+- **Emissions Calculation**: Per-route CO₂ emissions for all vehicle types and modes
+- **Green Carrier Matching**: Assigns best vehicle (EV/hybrid/diesel/truck/rail/ship) based on distance and feasibility
 - **Eco Points System**: Gamified, tiered rewards for low-emission routes
 - **LLM Integration**: Dynamic, user-friendly explanations for any route via `/generate-explanation`
 - **Reverse Logistics**: Pairs returns with deliveries within 3km for circular logistics
@@ -34,9 +46,10 @@ RouteZero powers eco-conscious delivery by:
 
 | Endpoint                  | Method | Description                                                                                  |
 |---------------------------|--------|----------------------------------------------------------------------------------------------|
-| `/route-options`          | POST   | Get optimized routes, emissions, eco points, and green carrier assignment                    |
+| `/route-options`          | POST   | Get optimized last-mile routes, emissions, eco points, and green carrier assignment           |
+| `/freight-options`        | POST   | Get optimized freight (long-haul) routes, emissions, and mode recommendations                |
 | `/route-explanation`      | POST   | Get a simple, modular natural language explanation for a route                               |
-| `/generate-explanation`   | POST   | Get a dynamic LLM-generated explanation for a route (for frontend \"Why this route?\" popups)|
+| `/generate-explanation`   | POST   | Get a dynamic LLM-generated explanation for a route (for frontend "Why this route?" popups)|
 | `/reverse-logistics`      | POST   | Pair returns with deliveries based on proximity (reverse logistics optimizer)                |
 | `/health`                 | GET    | Health check/status                                                                          |
 | `/`                       | GET    | Root endpoint (basic health check)                                                           |
@@ -48,7 +61,8 @@ RouteZero powers eco-conscious delivery by:
 ```
 RouteZero/
 ├── main.py                # FastAPI app, all endpoints, CORS, LLM integration
-├── emissions.py           # Emissions calculation logic
+├── emissions.py           # Emissions calculation logic (last-mile & freight)
+├── fleet_emissions.py     # Freight-specific emissions and route logic
 ├── carrier_selector.py    # Green carrier matching logic
 ├── eco_points.py          # Eco points and eco tag logic
 ├── reverse_logistics.py   # Reverse logistics optimizer (proximity-based pairing)
@@ -75,7 +89,7 @@ cd RouteZero
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\\Scripts\\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 ### 3. Install Dependencies
@@ -111,7 +125,7 @@ uvicorn main:app --reload
 
 ## 📝 API Usage Examples
 
-### 1. Route Optimization
+### 1. Last-Mile Route Optimization
 
 **Request:**
 ```json
@@ -140,7 +154,35 @@ POST /route-options
 }
 ```
 
-### 2. LLM-Powered Route Explanation
+### 2. Freight Route Optimization
+
+**Request:**
+```json
+POST /freight-options
+{
+  "source": [77.6413, 12.9716],
+  "destination": [72.8777, 19.0760],
+  "mode": "heavy_truck"
+}
+```
+**Response:**
+```json
+{
+  "freight_route": {
+    "distance_km": 837.62,
+    "duration_min": 837.62,
+    "emissions_grams": 460689.0,
+    "freight_emission_level": "high",
+    "vehicle_type": "heavy_truck",
+    "recommended_mode": "ship_barge",
+    "emissions_saved_grams": 452312.8,
+    "percent_emissions_saved": 98.18,
+    "best_emissions_grams": 8376.2
+  }
+}
+```
+
+### 3. LLM-Powered Route Explanation
 
 **Request:**
 ```json
@@ -162,7 +204,7 @@ POST /generate-explanation
 }
 ```
 
-### 3. Reverse Logistics
+### 4. Reverse Logistics
 
 **Request:**
 ```json
