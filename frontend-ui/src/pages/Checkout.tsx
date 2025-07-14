@@ -4,7 +4,9 @@ import { Leaf, Clock, Truck, CheckCircle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { mockRouteOptions } from '../data/mockData';
 // @ts-ignore: No type definitions for this package
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+
+import RouteMap from '../components/RouteMap';
+import AddressAutocomplete from '../components/AddressAutocomplete';
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -141,31 +143,26 @@ export default function Checkout() {
               rows={3}
             />
             <div className="mt-4">
-              <GooglePlacesAutocomplete
-                apiKey="YOUR_GOOGLE_MAPS_API_KEY" // TODO: Replace with your actual Google Maps API key
-                selectProps={{
-                  onChange: (val: any) => {
-                    setMapAddress(val);
-                    setShowMap(true);
-                    handleAddressChange(val?.label || '');
-                  },
-                  placeholder: 'Search address with Google Maps...',
+              <AddressAutocomplete
+                apiKey="" // Replace this with your real key
+                onSelect={(address: string) => {
+                  setMapAddress({ label: address });
+                  setShowMap(true);
+                  handleAddressChange(address);
                 }}
               />
+
+              {showMap && mapAddress?.label && (
+                <div className="mt-6">
+                  <h3 className="text-md font-semibold text-gray-700 mb-2">Delivery Route</h3>
+                  <RouteMap
+                    apiKey="" // Replace this with your real key
+                    destination={mapAddress.label}
+                  />
+                </div>
+              )}
             </div>
-            {showMap && mapAddress && (
-              <div className="mt-4 rounded-xl overflow-hidden">
-                <iframe
-                  title="Map"
-                  width="100%"
-                  height="200"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  allowFullScreen
-                  src={`https://www.google.com/maps?q=${encodeURIComponent(mapAddress.label)}&output=embed`}
-                />
-              </div>
-            )}
+
           </div>
         </div>
         {/* Right Column - Route Selection and Total */}
@@ -177,15 +174,14 @@ export default function Checkout() {
               {mockRouteOptions.map((route) => (
                 <div
                   key={route.id}
-                  className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${
-                    selectedRoute?.id === route.id
-                      ? 'border-[#0071dc] bg-[#f3f8fd]'
-                      : route.type === 'eco-friendly'
+                  className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${selectedRoute?.id === route.id
+                    ? 'border-[#0071dc] bg-[#f3f8fd]'
+                    : route.type === 'eco-friendly'
                       ? 'border-[#0071dc] bg-[#f3f8fd]'
                       : route.type === 'mid-route'
-                      ? 'border-[#ffc220] bg-[#fffbe6]'
-                      : 'border-gray-200 bg-gray-50'
-                  }`}
+                        ? 'border-[#ffc220] bg-[#fffbe6]'
+                        : 'border-gray-200 bg-gray-50'
+                    }`}
                   onClick={() => handleRouteSelect(route)}
                 >
                   <div className="flex items-start justify-between">
