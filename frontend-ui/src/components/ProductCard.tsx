@@ -10,6 +10,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { dispatch } = useApp();
   const [quantity, setQuantity] = useState(1);
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleAddToCart = () => {
     dispatch({
@@ -20,6 +21,8 @@ export default function ProductCard({ product }: ProductCardProps) {
       },
     });
     setQuantity(1);
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2000);
   };
 
   const renderStars = (rating: number) => {
@@ -36,7 +39,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="card hover:shadow-lg transition-shadow duration-300">
+    <div className="card hover:shadow-lg transition-shadow duration-300 relative">
       {/* Product Image */}
       <div className="relative mb-4">
         <img
@@ -75,7 +78,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold text-gray-900">
-            ${product.price.toFixed(2)}
+            ₹{product.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </span>
           
           {product.inStock ? (
@@ -105,13 +108,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={!product.inStock}
-            className="w-full btn-primary disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            className="w-full bg-[#0071dc] hover:bg-[#005cb2] text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            <ShoppingCart className="h-4 w-4" />
-            <span>Add to Cart</span>
+            Add to Cart
           </button>
         </div>
       </div>
+      {/* Add to Cart Popup */}
+      {showPopup && (
+        <div className="fixed left-1/2 bottom-8 transform -translate-x-1/2 z-50 bg-[#0071dc] text-white px-6 py-3 rounded-full shadow-lg text-base font-medium animate-fade-in-out">
+          Added to cart!
+        </div>
+      )}
     </div>
   );
 }

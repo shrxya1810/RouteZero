@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { Leaf, Clock, Truck, CheckCircle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { mockRouteOptions } from '../data/mockData';
+// @ts-ignore: No type definitions for this package
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
 export default function Checkout() {
   const navigate = useNavigate();
   const { state, dispatch, cartTotal, cartItemCount } = useApp();
   const [deliveryAddress, setDeliveryAddress] = useState(state.deliveryAddress);
   const [selectedRoute, setSelectedRoute] = useState(state.selectedRoute);
+  const [showMap, setShowMap] = useState(false);
+  const [mapAddress, setMapAddress] = useState<any>(null); // Use 'any' for GooglePlacesAutocomplete value
 
   if (cartItemCount === 0) {
     navigate('/');
@@ -60,6 +64,9 @@ export default function Checkout() {
     });
   };
 
+  const formatINR = (amount: number) =>
+    `₹${amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
   const getRouteIcon = (type: string) => {
     switch (type) {
       case 'eco-friendly':
@@ -90,14 +97,14 @@ export default function Checkout() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+      <h1 className="text-3xl font-bold text-[#0071dc] mb-8">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column - Order Details and Address */}
         <div className="space-y-6">
           {/* Order Summary */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Order Summary</h2>
+          <div className="card rounded-xl border border-gray-200 shadow bg-white">
+            <h2 className="text-xl font-bold text-[#0071dc] mb-4">Order Summary</h2>
             <div className="space-y-3">
               {state.cart.map((item) => (
                 <div key={item.product.id} className="flex justify-between items-center">
@@ -112,52 +119,80 @@ export default function Checkout() {
                       <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                     </div>
                   </div>
-                  <p className="font-medium">${(item.quantity * item.product.price).toFixed(2)}</p>
+                  <p className="font-medium">{formatINR(item.quantity * item.product.price)}</p>
                 </div>
               ))}
             </div>
             <div className="border-t border-gray-200 mt-4 pt-4">
               <div className="flex justify-between">
                 <span className="font-medium">Subtotal</span>
-                <span className="font-medium">${cartTotal.toFixed(2)}</span>
+                <span className="font-medium">{formatINR(cartTotal)}</span>
               </div>
             </div>
           </div>
-
           {/* Delivery Address */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Delivery Address</h2>
+          <div className="card rounded-xl border border-gray-200 shadow bg-white">
+            <h2 className="text-xl font-bold text-[#0071dc] mb-4">Delivery Address</h2>
             <textarea
               value={deliveryAddress}
               onChange={(e) => handleAddressChange(e.target.value)}
               placeholder="Enter your delivery address..."
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-500 focus:border-transparent"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0071dc] focus:border-transparent"
               rows={3}
             />
+            <div className="mt-4">
+              <GooglePlacesAutocomplete
+                apiKey="YOUR_GOOGLE_MAPS_API_KEY" // TODO: Replace with your actual Google Maps API key
+                selectProps={{
+                  onChange: (val: any) => {
+                    setMapAddress(val);
+                    setShowMap(true);
+                    handleAddressChange(val?.label || '');
+                  },
+                  placeholder: 'Search address with Google Maps...',
+                }}
+              />
+            </div>
+            {showMap && mapAddress && (
+              <div className="mt-4 rounded-xl overflow-hidden">
+                <iframe
+                  title="Map"
+                  width="100%"
+                  height="200"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  allowFullScreen
+                  src={`https://www.google.com/maps?q=${encodeURIComponent(mapAddress.label)}&output=embed`}
+                />
+              </div>
+            )}
           </div>
         </div>
-
         {/* Right Column - Route Selection and Total */}
         <div className="space-y-6">
           {/* Route Selection */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Choose Delivery Route</h2>
+          <div className="card rounded-xl border border-gray-200 shadow bg-white">
+            <h2 className="text-xl font-bold text-[#0071dc] mb-4">Choose Delivery Route</h2>
             <div className="space-y-3">
               {mockRouteOptions.map((route) => (
                 <div
                   key={route.id}
                   className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${
                     selectedRoute?.id === route.id
-                      ? 'border-eco-500 bg-eco-50'
-                      : getRouteColor(route.type)
+                      ? 'border-[#0071dc] bg-[#f3f8fd]'
+                      : route.type === 'eco-friendly'
+                      ? 'border-[#0071dc] bg-[#f3f8fd]'
+                      : route.type === 'mid-route'
+                      ? 'border-[#ffc220] bg-[#fffbe6]'
+                      : 'border-gray-200 bg-gray-50'
                   }`}
                   onClick={() => handleRouteSelect(route)}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3">
-                      {getRouteIcon(route.type)}
+                      <img src="/walmart-logo(1).png" alt="Route" className="h-5 w-5" />
                       <div>
-                        <h3 className="font-semibold text-gray-900">{route.name}</h3>
+                        <h3 className="font-semibold text-[#0071dc]">{route.name}</h3>
                         <p className="text-sm text-gray-600 mt-1">{route.description}</p>
                         <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
                           <span>⏱️ {route.estimatedTime}</span>
@@ -166,14 +201,14 @@ export default function Checkout() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-gray-900">${route.cost.toFixed(2)}</p>
-                      <p className="text-sm text-eco-600 font-medium">
+                      <p className="font-bold text-[#0071dc]">{formatINR(route.cost)}</p>
+                      <p className="text-sm font-medium text-[#ffc220]">
                         +{route.ecoPoints} pts
                       </p>
                     </div>
                   </div>
                   {selectedRoute?.id === route.id && (
-                    <div className="flex items-center space-x-2 mt-3 text-eco-600">
+                    <div className="flex items-center space-x-2 mt-3 text-[#0071dc]">
                       <CheckCircle className="h-4 w-4" />
                       <span className="text-sm font-medium">Selected</span>
                     </div>
@@ -182,48 +217,45 @@ export default function Checkout() {
               ))}
             </div>
           </div>
-
           {/* Order Total */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Order Total</h2>
+          <div className="card rounded-xl border border-gray-200 shadow bg-white">
+            <h2 className="text-xl font-bold text-[#0071dc] mb-4">Order Total</h2>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal ({cartItemCount} items)</span>
-                <span className="font-medium">${cartTotal.toFixed(2)}</span>
+                <span className="font-medium">{formatINR(cartTotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping</span>
                 <span className="font-medium">
-                  {selectedRoute ? `$${selectedRoute.cost.toFixed(2)}` : 'Select route'}
+                  {selectedRoute ? formatINR(selectedRoute.cost) : 'Select route'}
                 </span>
               </div>
               <div className="border-t border-gray-200 pt-3">
                 <div className="flex justify-between">
-                  <span className="text-lg font-bold text-gray-900">Total</span>
-                  <span className="text-lg font-bold text-gray-900">
-                    ${totalWithShipping.toFixed(2)}
+                  <span className="text-lg font-bold text-[#0071dc]">Total</span>
+                  <span className="text-lg font-bold text-[#0071dc]">
+                    {formatINR(totalWithShipping)}
                   </span>
                 </div>
               </div>
             </div>
-
             {/* Eco Points Info */}
             {selectedRoute && (
-              <div className="mt-4 p-3 bg-eco-50 rounded-lg">
+              <div className="mt-4 p-3 bg-[#f3f8fd] rounded-lg">
                 <div className="flex items-center space-x-2">
-                  <Leaf className="h-4 w-4 text-eco-600" />
-                  <span className="text-sm font-medium text-eco-800">
+                  <img src="/walmart-logo(1).png" alt="Eco Points" className="h-4 w-4" />
+                  <span className="text-sm font-medium text-[#0071dc]">
                     You'll earn {selectedRoute.ecoPoints} eco points with this delivery!
                   </span>
                 </div>
               </div>
             )}
-
             {/* Place Order Button */}
             <button
               onClick={handlePlaceOrder}
               disabled={!deliveryAddress.trim() || !selectedRoute}
-              className="w-full btn-primary mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-[#0071dc] text-white font-bold py-2 px-4 rounded mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-[#005fa3] transition"
             >
               Place Order
             </button>

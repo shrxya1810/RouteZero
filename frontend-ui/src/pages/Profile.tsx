@@ -71,13 +71,13 @@ export default function Profile() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">My Profile</h1>
+      <h1 className="text-3xl font-bold text-[#0071dc] mb-8">My Profile</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* User Information */}
         <div className="lg:col-span-1">
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Personal Information</h2>
+          <div className="card rounded-xl border border-gray-200 shadow bg-white">
+            <h2 className="text-xl font-bold text-[#0071dc] mb-4">Personal Information</h2>
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-eco-100 rounded-full flex items-center justify-center">
@@ -111,11 +111,11 @@ export default function Profile() {
 
         {/* Eco Points and Stats */}
         <div className="lg:col-span-2">
-          <div className="card mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Eco Points & Sustainability</h2>
+          <div className="card mb-6 rounded-xl border border-gray-200 shadow bg-white">
+            <h2 className="text-xl font-bold text-[#0071dc] mb-4">Eco Points & Sustainability</h2>
             
             {/* Eco Points Display */}
-            <div className="bg-gradient-to-r from-eco-500 to-eco-600 rounded-lg p-6 text-white mb-6 relative">
+            <div className="bg-gradient-to-r from-[#0071dc] to-[#ffc220] rounded-lg p-6 text-white mb-6 relative">
               {state.user.showStreakBonus === 3 && (
                 <div className="absolute top-2 right-2 animate-bounce bg-green-200 text-green-800 px-4 py-2 rounded shadow-lg font-bold z-10">
                   🎉 3-Day Streak! +15 pts
@@ -129,8 +129,8 @@ export default function Profile() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-2xl font-bold">{state.user.ecoPoints}</h3>
-                  <p className="text-eco-100">Total Eco Points</p>
-                  <div className="mt-2 flex flex-col space-y-1 text-eco-100 text-sm">
+                  <p className="text-white">Total Eco Points</p>
+                  <div className="mt-2 flex flex-col space-y-1 text-white text-sm">
                     <span>Tier: <span className="font-semibold">{userTier}</span></span>
                     <span>Streak: <span className="font-semibold">{state.user.streak || 0} days</span></span>
                     <span>Emissions Saved: <span className="font-semibold">{state.user.emissionsSaved?.toFixed(2) || '0.00'} kg CO₂</span></span>
@@ -139,19 +139,19 @@ export default function Profile() {
                     )}
                   </div>
                 </div>
-                <Leaf className="h-12 w-12 text-eco-200" />
+                <img src="/walmart-logo(1).png" alt="Eco Points" className="h-12 w-12" />
               </div>
             </div>
 
             {/* Points Breakdown */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-green-50 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">50</div>
-                <div className="text-sm text-green-700">Eco-Friendly Deliveries</div>
+              <div className="text-center p-4 bg-[#f3f8fd] rounded-lg">
+                <div className="text-2xl font-bold text-[#0071dc]">50</div>
+                <div className="text-sm text-[#0071dc]">Eco-Friendly Deliveries</div>
               </div>
-              <div className="text-center p-4 bg-blue-50 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">25</div>
-                <div className="text-sm text-blue-700">Balanced Routes</div>
+              <div className="text-center p-4 bg-[#fffbe6] rounded-lg">
+                <div className="text-2xl font-bold text-[#ffc220]">25</div>
+                <div className="text-sm text-[#ffc220]">Balanced Routes</div>
               </div>
               <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <div className="text-2xl font-bold text-gray-600">0</div>
@@ -161,8 +161,8 @@ export default function Profile() {
           </div>
 
           {/* Available Rewards */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Available Rewards</h2>
+          <div className="card rounded-xl border border-gray-200 shadow bg-white">
+            <h2 className="text-xl font-bold text-[#0071dc] mb-4">Available Rewards</h2>
             <p className="text-gray-600 mb-6">
               Redeem your eco points for exclusive rewards and discounts.
             </p>
@@ -177,18 +177,18 @@ export default function Profile() {
                     key={reward.id}
                     className={`border-2 rounded-lg p-4 ${
                       isSelected
-                        ? 'border-green-500 bg-green-50'
+                        ? 'border-[#0071dc] bg-[#f3f8fd]'
                         : canRedeem
-                        ? 'border-gray-200 bg-white hover:border-eco-300'
+                        ? 'border-gray-200 bg-white hover:border-[#0071dc]'
                         : 'border-gray-200 bg-gray-50'
                     }`}
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-2">
                         {getRewardIcon(reward.type)}
-                        <h3 className="font-semibold text-gray-900">{reward.name}</h3>
+                        <h3 className="font-semibold text-[#0071dc]">{reward.name}</h3>
                       </div>
-                      <span className="text-sm font-medium text-eco-600">
+                      <span className="text-sm font-medium text-[#0071dc]">
                         {reward.pointsRequired} pts
                       </span>
                     </div>
@@ -197,9 +197,9 @@ export default function Profile() {
 
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-500">
-                        {reward.type === 'discount' && `${reward.discount}% off`}
+                        {reward.type === 'discount' && `₹${reward.discount} off`}
                         {reward.type === 'free-shipping' && 'Free shipping'}
-                        {reward.type === 'cashback' && `$${reward.discount} back`}
+                        {reward.type === 'cashback' && `₹${reward.discount} cashback`}
                       </span>
 
                       <button
@@ -207,7 +207,7 @@ export default function Profile() {
                         disabled={!canRedeem}
                         className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                           canRedeem
-                            ? 'bg-eco-600 text-white hover:bg-eco-700'
+                            ? 'bg-[#0071dc] text-white hover:bg-[#005fa3]'
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         }`}
                       >
@@ -225,19 +225,19 @@ export default function Profile() {
               })}
             </div>
             {dummyCode && (
-              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg text-center">
-                <div className="text-lg font-bold text-green-700 mb-2">Your Reward Code</div>
-                <div className="text-2xl font-mono text-green-900 mb-2">{dummyCode}</div>
-                <div className="text-sm text-green-700">Use this code at checkout or scan the QR below.</div>
+              <div className="mt-6 p-4 bg-[#f3f8fd] border border-[#0071dc] rounded-lg text-center">
+                <div className="text-lg font-bold text-[#0071dc] mb-2">Your Reward Code</div>
+                <div className="text-2xl font-mono text-[#0071dc] mb-2">{dummyCode}</div>
+                <div className="text-sm text-[#0071dc]">Use this code at checkout or scan the QR below.</div>
                 {/* Simulated QR code (could use a library for real QR) */}
-                <div className="mt-2 mx-auto w-20 h-20 bg-green-200 rounded flex items-center justify-center font-bold text-green-800">QR</div>
+                <div className="mt-2 mx-auto w-20 h-20 bg-[#ffc220] rounded flex items-center justify-center font-bold text-[#0071dc]">QR</div>
               </div>
             )}
           </div>
           {/* Reward History */}
           {state.user.rewardHistory && state.user.rewardHistory.length > 0 && (
-            <div className="card mt-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Reward Redemption History</h2>
+            <div className="card mt-8 rounded-xl border border-gray-200 shadow bg-white">
+              <h2 className="text-xl font-bold text-[#0071dc] mb-4">Reward Redemption History</h2>
               <ul className="list-disc pl-6 text-gray-700">
                 {state.user.rewardHistory.map((rid, idx) => {
                   const reward = mockEcoRewards.find(r => r.id === rid);
@@ -255,14 +255,14 @@ export default function Profile() {
 
       {/* Quick Actions */}
       <div className="mt-8">
-        <div className="card">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+        <div className="card rounded-xl border border-gray-200 shadow bg-white">
+          <h2 className="text-xl font-bold text-[#0071dc] mb-4">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
               to="/"
-              className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-eco-300 hover:bg-eco-50 transition-colors"
+              className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-[#0071dc] hover:bg-[#f3f8fd] transition-colors"
             >
-              <ShoppingBag className="h-6 w-6 text-eco-600" />
+              <ShoppingBag className="h-6 w-6 text-[#0071dc]" />
               <div>
                 <h3 className="font-medium text-gray-900">Continue Shopping</h3>
                 <p className="text-sm text-gray-600">Browse more eco-friendly products</p>
@@ -271,9 +271,9 @@ export default function Profile() {
 
             <Link
               to="/cart"
-              className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-eco-300 hover:bg-eco-50 transition-colors"
+              className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-[#0071dc] hover:bg-[#f3f8fd] transition-colors"
             >
-              <ShoppingBag className="h-6 w-6 text-eco-600" />
+              <ShoppingBag className="h-6 w-6 text-[#0071dc]" />
               <div>
                 <h3 className="font-medium text-gray-900">View Cart</h3>
                 <p className="text-sm text-gray-600">Check your shopping cart</p>

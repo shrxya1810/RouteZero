@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Search, Filter } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { mockProducts } from '../data/mockData';
 import ProductCard from '../components/ProductCard';
 
 export default function Products() {
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
 
@@ -12,10 +11,8 @@ export default function Products() {
 
   const filteredProducts = mockProducts
     .filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           product.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+      return matchesCategory;
     })
     .sort((a, b) => {
       switch (sortBy) {
@@ -34,31 +31,20 @@ export default function Products() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Hero Section */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Shop Sustainably
-        </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Discover eco-friendly products and earn points for choosing sustainable delivery options.
-        </p>
+      {/* Walmart Hero Banner */}
+      <div className="flex flex-col md:flex-row items-center justify-between bg-[#0071dc] rounded-2xl p-8 mb-10 shadow-lg">
+        <div className="flex-1 text-left">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Hot summer savings</h1>
+          <p className="text-lg text-white mb-6">Get it in as fast as an hour. Shop now for exclusive deals!</p>
+          <button className="bg-[#ffc220] hover:bg-yellow-400 text-[#0071dc] font-semibold px-6 py-2 rounded-full text-lg shadow transition">Shop now</button>
+        </div>
+        <div className="flex-1 flex justify-center mt-6 md:mt-0">
+          <img src="/ipad.jpg" alt="iPad" className="h-40 md:h-48 w-auto rounded-xl shadow-lg" />
+        </div>
       </div>
 
-      {/* Search and Filters */}
+      {/* Filters */}
       <div className="mb-8 space-y-4">
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-eco-500 focus:border-transparent"
-          />
-        </div>
-
-        {/* Filters */}
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex items-center space-x-2">
             <Filter className="h-5 w-5 text-gray-500" />
@@ -69,7 +55,7 @@ export default function Products() {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-eco-500 focus:border-transparent"
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-walmart-blue focus:border-transparent"
           >
             {categories.map(category => (
               <option key={category} value={category}>
@@ -82,7 +68,7 @@ export default function Products() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-eco-500 focus:border-transparent"
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-walmart-blue focus:border-transparent"
           >
             <option value="featured">Featured</option>
             <option value="price-low">Price: Low to High</option>
@@ -109,14 +95,11 @@ export default function Products() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <div className="text-gray-400 mb-4">
-            <Search className="h-16 w-16 mx-auto" />
-          </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No products found
           </h3>
           <p className="text-gray-600">
-            Try adjusting your search terms or filters.
+            Try adjusting your filters.
           </p>
         </div>
       )}

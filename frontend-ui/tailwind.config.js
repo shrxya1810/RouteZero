@@ -6,6 +6,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        walmart: {
+          blue: '#0071dc', // Walmart blue
+          yellow: '#ffc220', // Walmart yellow
+        },
         primary: {
           50: '#f0fdf4',
           100: '#dcfce7',
@@ -30,7 +34,18 @@ module.exports = {
           800: '#075985',
           900: '#0c4a6e',
         }
-      }
+      },
+      borderRadius: {
+        'none': '0px',
+        'sm': '0.125rem',
+        DEFAULT: '0.75rem', // large rounded corners
+        'md': '0.375rem',
+        'lg': '0.75rem',
+        'xl': '1rem',
+        '2xl': '1.5rem',
+        '3xl': '2rem',
+        'full': '9999px',
+      },
     },
   },
   plugins: [],

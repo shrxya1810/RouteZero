@@ -38,7 +38,7 @@ export default function Cart() {
           </p>
           <Link
             to="/"
-            className="btn-primary inline-flex items-center space-x-2"
+            className="inline-flex items-center space-x-2 bg-[#0071dc] hover:bg-[#005cb2] text-white font-semibold px-6 py-2 rounded-full text-base shadow transition"
           >
             <span>Start Shopping</span>
             <ArrowRight className="h-4 w-4" />
@@ -50,7 +50,7 @@ export default function Cart() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">Cart</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
@@ -75,7 +75,7 @@ export default function Cart() {
                       {item.product.description.substring(0, 100)}...
                     </p>
                     <p className="text-lg font-bold text-gray-900 mt-2">
-                      ${item.product.price.toFixed(2)}
+                      ₹{item.product.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </p>
                   </div>
 
@@ -111,10 +111,10 @@ export default function Cart() {
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">
-                      Item Total ({item.quantity} × ${item.product.price.toFixed(2)})
+                      Item Total ({item.quantity} × ₹{item.product.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })})
                     </span>
                     <span className="text-lg font-bold text-gray-900">
-                      ${(item.quantity * item.product.price).toFixed(2)}
+                      ₹{(item.quantity * item.product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </span>
                   </div>
                 </div>
@@ -131,7 +131,7 @@ export default function Cart() {
             <div className="space-y-3 mb-6">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal ({cartItemCount} items)</span>
-                <span className="font-medium">${cartTotal.toFixed(2)}</span>
+                <span className="font-medium">₹{cartTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping</span>
@@ -141,29 +141,16 @@ export default function Cart() {
                 <div className="flex justify-between">
                   <span className="text-lg font-bold text-gray-900">Total</span>
                   <span className="text-lg font-bold text-gray-900">
-                    ${cartTotal.toFixed(2)}
+                    ₹{cartTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Eco Points Info */}
-            <div className="bg-eco-50 rounded-lg p-4 mb-6">
-              <div className="flex items-center space-x-2 mb-2">
-                <div className="w-2 h-2 bg-eco-600 rounded-full"></div>
-                <span className="text-sm font-medium text-eco-800">
-                  Eco Points Available: {state.user.ecoPoints}
-                </span>
-              </div>
-              <p className="text-xs text-eco-700">
-                Choose eco-friendly delivery to earn more points!
-              </p>
-            </div>
-
             {/* Checkout Button */}
             <Link
               to="/checkout"
-              className="w-full btn-primary flex items-center justify-center space-x-2"
+              className="w-full flex items-center justify-center space-x-2 bg-[#0071dc] hover:bg-[#005cb2] text-white font-semibold px-6 py-2 rounded-full text-base shadow transition"
             >
               <span>Proceed to Checkout</span>
               <ArrowRight className="h-4 w-4" />
@@ -172,7 +159,7 @@ export default function Cart() {
             {/* Continue Shopping */}
             <Link
               to="/"
-              className="w-full btn-secondary mt-3 flex items-center justify-center"
+              className="w-full mt-3 flex items-center justify-center bg-[#ffc220] hover:bg-yellow-400 text-[#0071dc] font-semibold px-6 py-2 rounded-full text-base shadow transition"
             >
               Continue Shopping
             </Link>

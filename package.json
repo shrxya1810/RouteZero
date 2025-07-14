@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
+    "lucide-react": "^0.525.0",
+    "react-google-places-autocomplete": "^4.1.0",
+    "react-router-dom": "^7.6.3"
+  }
+}
