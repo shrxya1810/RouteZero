@@ -116,6 +116,56 @@ function appReducer(state: AppState, action: AppAction): AppState {
       };
     }
 
+    case 'UPDATE_STREAK': {
+      const { date, isEco } = action.payload;
+      const currentStreak = state.user.streak || 0;
+      const lastEcoDate = state.user.lastEcoDate || '';
+      
+      let newStreak = currentStreak;
+      let showStreakBonus: 0 | 3 | 7 = 0;
+      
+      if (isEco) {
+        // Check if this is consecutive day
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayString = yesterday.toISOString().slice(0, 10);
+        
+        if (lastEcoDate === yesterdayString || lastEcoDate === '') {
+          newStreak = currentStreak + 1;
+          
+          // Check for streak bonuses
+          if (newStreak === 3) {
+            showStreakBonus = 3;
+          } else if (newStreak === 7) {
+            showStreakBonus = 7;
+          }
+        } else {
+          newStreak = 1; // Start new streak
+        }
+      } else {
+        newStreak = 0; // Reset streak for non-eco orders
+      }
+      
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          streak: newStreak,
+          lastEcoDate: date,
+          showStreakBonus,
+        },
+      };
+    }
+
+    case 'ADD_EMISSIONS_SAVED': {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          emissionsSaved: (state.user.emissionsSaved || 0) + action.payload,
+        },
+      };
+    }
 
     default:
       return state;

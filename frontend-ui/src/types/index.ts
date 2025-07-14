@@ -33,10 +33,10 @@ export interface User {
   ecoPoints: number;
   address: string;
   phone: string;
-  streak: 0;
-  lastEcoDate: '';
+  streak: number;
+  lastEcoDate: string;
   showStreakBonus: 0 | 3 | 7;
-  emissionsSaved: 0;
+  emissionsSaved: number;
   rewardHistory: string[];
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, Clock, Truck, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { mockRouteOptions } from '../data/mockData';
 // @ts-ignore: No type definitions for this package
@@ -52,8 +52,8 @@ export default function Checkout() {
     // Add eco points for the selected route
     dispatch({ type: 'ADD_ECO_POINTS', payload: selectedRoute.ecoPoints });
 
-    // Update streak and emissions saved for eco or mid routes
-    const isEco = selectedRoute.type === 'eco-friendly' || selectedRoute.type === 'mid-route';
+    // Update streak and emissions saved for eco routes
+    const isEco = selectedRoute.type === 'eco-friendly';
     if (isEco) {
       dispatch({ type: 'UPDATE_STREAK', payload: { date: new Date().toISOString().slice(0, 10), isEco: true } });
       dispatch({ type: 'ADD_EMISSIONS_SAVED', payload: selectedRoute.carbonFootprint });
@@ -61,47 +61,44 @@ export default function Checkout() {
       dispatch({ type: 'UPDATE_STREAK', payload: { date: new Date().toISOString().slice(0, 10), isEco: false } });
     }
 
-    // Clear cart
-    dispatch({ type: 'CLEAR_CART' });
+    // Prepare order data BEFORE clearing cart
+    const orderData = {
+      orderNumber: `WM${Date.now()}`,
+      date: new Date().toLocaleDateString(),
+      customerName: state.user.name,
+      deliveryAddress,
+      items: state.cart.map(item => ({
+        name: item.product.name,
+        quantity: item.quantity,
+        price: item.product.price
+      })),
+      subtotal: cartTotal,
+      shippingCost: selectedRoute.cost,
+      total: cartTotal + selectedRoute.cost,
+      routeType: selectedRoute.name,
+      carbonEmissionsSaved: selectedRoute.carbonFootprint,
+      estimatedDeliveryTime: selectedRoute.estimatedTime,
+      ecoPointsEarned: selectedRoute.ecoPoints
+    };
 
-    // Navigate to confirmation, pass feedback
+    console.log('Order data being passed:', orderData);
+    console.log('Route type:', selectedRoute.type);
+    console.log('Is eco-friendly:', selectedRoute.type === 'eco-friendly');
+
+    // Navigate to confirmation
     navigate('/order-confirmation', {
       state: {
         pointsEarned: selectedRoute.ecoPoints,
         emissionsSaved: selectedRoute.carbonFootprint,
         routeType: selectedRoute.type,
+        orderData
       },
+      replace: true
     });
   };
 
   const formatINR = (amount: number) =>
     `₹${amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-
-  const getRouteIcon = (type: string) => {
-    switch (type) {
-      case 'eco-friendly':
-        return <Leaf className="h-5 w-5 text-green-600" />;
-      case 'mid-route':
-        return <Clock className="h-5 w-5 text-yellow-600" />;
-      case 'non-eco':
-        return <Truck className="h-5 w-5 text-gray-600" />;
-      default:
-        return <Truck className="h-5 w-5 text-gray-600" />;
-    }
-  };
-
-  const getRouteColor = (type: string) => {
-    switch (type) {
-      case 'eco-friendly':
-        return 'border-green-200 bg-green-50';
-      case 'mid-route':
-        return 'border-yellow-200 bg-yellow-50';
-      case 'non-eco':
-        return 'border-gray-200 bg-gray-50';
-      default:
-        return 'border-gray-200 bg-gray-50';
-    }
-  };
 
   const totalWithShipping = cartTotal + (selectedRoute?.cost || 0);
 

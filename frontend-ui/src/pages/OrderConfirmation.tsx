@@ -1,11 +1,19 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { CheckCircle, Leaf, ArrowRight, Home } from 'lucide-react';
+import { CheckCircle, ArrowRight, Home } from 'lucide-react';
+import CarbonReceiptGenerator from '../components/CarbonReceiptGenerator';
+import { useApp } from '../context/AppContext';
 
 export default function OrderConfirmation() {
   const location = useLocation();
-  const { pointsEarned = 0, emissionsSaved = 0, routeType = '' } = location.state || {};
+  const { dispatch } = useApp();
+  const { pointsEarned = 0, emissionsSaved = 0, routeType = '', orderData } = location.state || {};
   const [showRedeem, setShowRedeem] = React.useState(pointsEarned > 0);
+
+  // Clear cart when order confirmation page loads
+  React.useEffect(() => {
+    dispatch({ type: 'CLEAR_CART' });
+  }, [dispatch]);
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -73,12 +81,35 @@ export default function OrderConfirmation() {
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
                 <div className="text-2xl font-bold text-[#ffc220]">{emissionsSaved}kg</div>
-                <div className="text-sm text-[#ffc220]">CO Saved</div>
+                <div className="text-sm text-[#ffc220]">CO₂ Saved</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-[#ffc220]">{routeType === 'eco-friendly' ? '85%' : routeType === 'mid-route' ? '40%' : '0%'}</div>
                 <div className="text-sm text-[#ffc220]">Less Carbon</div>
               </div>
+            </div>
+            
+            {/* Carbon Receipt Generator - show for all eco routes */}
+            {emissionsSaved > 0 && (
+              <div className="mt-4 pt-4 border-t border-[#ffc220]/20">
+                <div className="flex justify-center">
+                  {orderData ? (
+                    <CarbonReceiptGenerator receiptData={orderData} />
+                  ) : (
+                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                      <p className="text-green-800 font-medium">🌱 Eco-Friendly Order Complete!</p>
+                      <p className="text-green-600 text-sm mt-1">
+                        You saved {emissionsSaved}kg CO₂ with this delivery
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Debug info - remove this later */}
+            <div className="mt-2 text-xs text-gray-400">
+              Debug: orderData={orderData ? 'exists' : 'missing'}, routeType='{routeType}', emissionsSaved={emissionsSaved}
             </div>
           </div>
         )}
