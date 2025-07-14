@@ -16,7 +16,6 @@ export default function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <img src="/walmart-logo(1).png" alt="Walmart Logo" className="h-8 w-auto" />
-            <span className="text-white font-semibold text-lg hidden sm:block">Walmart Logo</span>
           </Link>
 
           {/* Search Bar */}
