@@ -144,7 +144,7 @@ export default function Checkout() {
             />
             <div className="mt-4">
               <AddressAutocomplete
-                apiKey="" // Replace this with your real key
+                apiKey="AIzaSyDB5hMq-k7VL0iJPRiL0WHX96wqCVVoS7k" // Replace this with your real key
                 onSelect={(address: string) => {
                   setMapAddress({ label: address });
                   setShowMap(true);
@@ -156,7 +156,7 @@ export default function Checkout() {
                 <div className="mt-6">
                   <h3 className="text-md font-semibold text-gray-700 mb-2">Delivery Route</h3>
                   <RouteMap
-                    apiKey="" // Replace this with your real key
+                    apiKey="AIzaSyDB5hMq-k7VL0iJPRiL0WHX96wqCVVoS7k" // Replace this with your real key
                     destination={mapAddress.label}
                   />
                 </div>
