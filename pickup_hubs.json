@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Walmart Warehouse - Bangalore East",
+    "type": "warehouse",
+    "region": "Bangalore",
+    "coordinates": [77.6413, 12.9716]
+  },
+  {
+    "name": "Walmart Fulfillment Center - Mumbai Central",
+    "type": "fulfillment_center",
+    "region": "Mumbai",
+    "coordinates": [72.8777, 19.0760]
+  },
+  {
+    "name": "Walmart Retail Store - Delhi NCR",
+    "type": "retail_store",
+    "region": "Delhi",
+    "coordinates": [77.2090, 28.6139]
+  },
+  {
+    "name": "Walmart Customer Service Hub - Hyderabad",
+    "type": "customer_location",
+    "region": "Hyderabad",
+    "coordinates": [78.4867, 17.3850]
+  },
+  {
+    "name": "Walmart Distribution Center - Chennai",
+    "type": "warehouse",
+    "region": "Chennai",
+    "coordinates": [80.2707, 13.0827]
+  },
+  {
+    "name": "Walmart Express Store - Nagpur",
+    "type": "retail_store",
+    "region": "Nagpur",
+    "coordinates": [79.0882, 21.1458]
+  },
+  {
+    "name": "Walmart Fulfillment Hub - Indore",
+    "type": "fulfillment_center",
+    "region": "Indore",
+    "coordinates": [75.8577, 22.7196]
+  },
+  {
+    "name": "Walmart Logistics Center - Pune",
+    "type": "warehouse",
+    "region": "Pune",
+    "coordinates": [73.8563, 18.5204]
+  }
+]
