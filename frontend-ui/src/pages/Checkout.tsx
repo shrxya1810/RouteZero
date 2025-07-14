@@ -29,6 +29,14 @@ export default function Checkout() {
   const handleAddressChange = (address: string) => {
     setDeliveryAddress(address);
     dispatch({ type: 'SET_ADDRESS', payload: address });
+    
+    // Show map and set address for map display when typing in textarea
+    if (address.trim()) {
+      setMapAddress({ label: address });
+      setShowMap(true);
+    } else {
+      setShowMap(false);
+    }
   };
 
   const handlePlaceOrder = () => {
@@ -144,7 +152,7 @@ export default function Checkout() {
             />
             <div className="mt-4">
               <AddressAutocomplete
-                apiKey="AIzaSyDB5hMq-k7VL0iJPRiL0WHX96wqCVVoS7k" // Replace this with your real key
+                apiKey="AIzaSyCbARkUvVezU2dZvoYdjHOmOUwS-LsC9KU" // Replace this with your real key
                 onSelect={(address: string) => {
                   setMapAddress({ label: address });
                   setShowMap(true);
@@ -156,7 +164,7 @@ export default function Checkout() {
                 <div className="mt-6">
                   <h3 className="text-md font-semibold text-gray-700 mb-2">Delivery Route</h3>
                   <RouteMap
-                    apiKey="AIzaSyDB5hMq-k7VL0iJPRiL0WHX96wqCVVoS7k" // Replace this with your real key
+                    apiKey="" // No longer needed for OpenStreetMap
                     destination={mapAddress.label}
                   />
                 </div>
